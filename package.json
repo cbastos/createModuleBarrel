@@ -1,5 +1,5 @@
 {
-  "name": "@angular/create-module-barrel",
+  "name": "angular-create-module-barrel",
   "version": "1.0.0-alpha.1",
   "description": "Finds angular modules and generates a barrel with directives, pipes, providers and components based in folder structure",
   "main": "createModuleBarrel.js",
