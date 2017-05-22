@@ -47,7 +47,7 @@ function fillAliases(elements, files, moduleFolder, cb) {
 
 function getAliasOf(chunk, filePath, moduleFolder) {
     let matchedComponents = [];
-    var matches = chunk.match(/(@Injectable|@Component|@Directive|@Pipe)\(\{?(.*\r?\n?){5}\}?\)(.*\r?\n)(export class \w*)/g);
+    var matches = chunk.match(/(@Injectable|@Component|@Directive|@NgModule|@Pipe)\(\{?(.*\r?\n?){5}\}?\)(.*\r?\n)(export class \w*)/g);
     if (matches) {
         for (var i = 0; i < matches.length; i++) {
             var currentMatch = matches[i];
@@ -76,6 +76,8 @@ function getComponentCategory(chunk) {
         category = "directives";
     } else if (chunkHasA(chunk, /@Injectable/)) {
         category = "providers";
+    } else if (chunkHasA(chunk, /@NgModule/)){
+        category = "modules";
     }
     return category;
 }
@@ -97,11 +99,13 @@ function writeModuleBarrel(elements, moduleFile, moduleFolder, callback) {
         pipesBarrelInfo = getElementsBarrel(elements.pipes),
         directivesBarrelInfo = getElementsBarrel(elements.directives),
         providersBarrelInfo = getElementsBarrel(elements.providers),
+        modulesBarrelInfo = getElementsBarrel(elements.modules),
         componentsImports =
             `${componentsBarrelInfo.imports}
 ${pipesBarrelInfo.imports}
 ${directivesBarrelInfo.imports}
 ${providersBarrelInfo.imports}
+${modulesBarrelInfo.imports}
 
 export const COMPONENTS = [
     ${componentsBarrelInfo.list}
@@ -119,11 +123,16 @@ export const PROVIDERS = [
     ${providersBarrelInfo.list}
 ];
 
+export const MODULES = [
+    ${modulesBarrelInfo.list}
+];
+
 export { 
     ${componentsBarrelInfo.list}
     ${pipesBarrelInfo.list}
     ${directivesBarrelInfo.list}
     ${providersBarrelInfo.list}
+    ${modulesBarrelInfo.list}
 }`;
 
     barrelName = pathManager.basename(moduleFile).split(".")[0];
